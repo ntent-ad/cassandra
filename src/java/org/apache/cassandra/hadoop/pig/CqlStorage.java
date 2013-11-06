@@ -472,7 +472,13 @@ public class CqlStorage extends AbstractCassandraStorage
 
         // combine all columns in a list
         if (keyColumns != null && columns != null)
-            keyColumns.addAll(columns);
+        {
+        	for (ColumnDef column : columns)
+        	{
+        		if (!keyColumns.contains(column))
+        			keyColumns.add(column);        		
+        	}
+        }
 
         return keyColumns;
     }

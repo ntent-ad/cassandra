@@ -438,6 +438,18 @@ public abstract class AbstractCassandraStorage extends LoadFunc implements Store
 
     private ByteBuffer objToMapBB(List<Object> objects)
     {
+    	// handle a single bag of tuples here also.
+    	if (objects.size() == 1 && objects.get(0) instanceof DataBag)
+    	{
+    		DataBag bag = (DataBag)(objects.get(0));
+    		List<Object> bagTuples = new ArrayList<Object>((int)bag.size());
+    		for (Iterator<Tuple> it = bag.iterator(); it.hasNext();) {
+        		bagTuples.add(it.next());
+    		}
+    		
+    		return objToMapBB(bagTuples);
+    	}
+    	
         List<ByteBuffer> serialized = new ArrayList<ByteBuffer>(objects.size() * 2);
         for(Object sub : objects)
         {
